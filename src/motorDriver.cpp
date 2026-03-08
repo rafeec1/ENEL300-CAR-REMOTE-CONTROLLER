@@ -73,17 +73,13 @@ private:
 L298Motor motorA(IN1_PIN, IN2_PIN, ENA_PIN, 0);
 L298Motor motorB(IN3_PIN, IN4_PIN, ENB_PIN, 1);
 
-void setup() {
-  Serial.begin(115200);
-  delay(200);
+void motorBegin() {
 
   motorA.begin();
   motorB.begin();
-
-  Serial.println("L298N + ESP32 demo starting...");
 }
 
-void loop() {
+void motorUpdate() {
   // Simple functional test:
   // 1) ramp forward
   
@@ -115,20 +111,6 @@ void loop() {
   delay(800);
   
 
-  /*
-  motorA.setSpeed(100);
-  motorB.setSpeed(100);
-  delay(10000);
-
-  //stop
-  motorA.brake();
-  motorB.brake();
-  delay(2000);
-
-  //reverse
-  motorA.setSpeed(-200);
-  motorB.setSpeed(-200);
-  delay(2000);
-  */
+  
 
 }
