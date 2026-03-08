@@ -86,6 +86,7 @@ void setup() {
 void loop() {
   // Simple functional test:
   // 1) ramp forward
+  /*
   for (int s = 0; s <= 255; s += 5) {
     motorA.setSpeed(s);
     motorB.setSpeed(s);
@@ -112,4 +113,19 @@ void loop() {
   motorA.setSpeed(0);
   motorB.setSpeed(0);
   delay(800);
+  */
+
+  motorA.setSpeed(200);
+  motorB.setSpeed(200);
+  delay(2000);
+
+  //stop
+  motorA.brake();
+  motorB.brake();
+
+  //reverse
+  motorA.setSpeed(-200);
+  motorB.setSpeed(-200);
+  delay(2000);
+
 }
