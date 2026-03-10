@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "motorDriver.h"
 
 // ===== Pin mapping (edit these to match your wiring) =====
 static const int ENA_PIN = 19;  // PWM for Motor A
@@ -74,7 +75,6 @@ L298Motor motorA(IN1_PIN, IN2_PIN, ENA_PIN, 0);
 L298Motor motorB(IN3_PIN, IN4_PIN, ENB_PIN, 1);
 
 void motorBegin() {
-
   motorA.begin();
   motorB.begin();
 }

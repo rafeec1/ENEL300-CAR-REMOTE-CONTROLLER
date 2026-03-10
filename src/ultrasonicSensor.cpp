@@ -22,7 +22,7 @@ static const uint8_t OLED_DC   = 12;
 static const uint8_t OLED_CS   = 13;
 
 // Software SPI U8g2 constructor for SSD1306 128x64 OLED
-U8G2_SSD1306_128X64_NONAME_F_4W_SW_SPI display(
+U8G2_SSD1315_128X64_NONAME_F_4W_SW_SPI display(
     U8G2_R0,
     OLED_CLK,
     OLED_MOSI,
@@ -155,8 +155,10 @@ void drawDisplay() {
   display.sendBuffer();
 }
 
-void ultrasonicBegin() {
+// change back to ultrasonicBegin()
+void setup() {
   Serial.begin(115200);
+  Serial.println("Connecting...");
 
   pinMode(TRIG_PIN, OUTPUT);
   digitalWrite(TRIG_PIN, LOW);
@@ -173,7 +175,8 @@ void ultrasonicBegin() {
   delay(300);
 }
 
-void ultrasonicUpdate() {
+// reset back to ultrasonicUpdate()
+void loop() {
   processUltrasonicResult();
 
   // update OLED at a reasonable rate
