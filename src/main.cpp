@@ -1,19 +1,20 @@
 #include <Arduino.h>
 
-#include "ultrasonicSensor.h"
-#include "motorDriver.h"
 #include "ultrasonicMaybe.h"
+#include "controller.h"
 
 void setup() {
     Serial.begin(115200);
     Serial.printf("Serial Begin...");
-    // ultrasonicBegin();
-    motorBegin();
-    usBegin();
+    
+    // futureBegin();
+    distanceBegin();
+    controllerBegin();
 }
 
 void loop() {
-    // ultrasonicUpdate();
-    motorUpdate();
-    usUpdate();
+
+    // futureUpdate();
+    distanceUpdate();
+    controllerUpdate();
 }

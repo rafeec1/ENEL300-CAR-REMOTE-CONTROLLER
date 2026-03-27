@@ -156,7 +156,7 @@ void drawDisplay() {
 }
 
 // change back to ultrasonicBegin()
-void setup() {
+void futureBegin() {
   Serial.begin(115200);
   Serial.println("Connecting...");
 
@@ -176,7 +176,7 @@ void setup() {
 }
 
 // reset back to ultrasonicUpdate()
-void loop() {
+void futureUpdate() {
   processUltrasonicResult();
 
   // update OLED at a reasonable rate

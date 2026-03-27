@@ -1,5 +1,5 @@
-#ifndef MOTOR_DRIVER_H
-#define MOTOR_DRIVER_H
+#ifndef FUTURE_H
+#define FUTURE_H
 
 void motorBegin();
 void motorUpdate();
