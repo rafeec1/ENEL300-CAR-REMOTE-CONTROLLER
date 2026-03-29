@@ -17,14 +17,14 @@ bool deviceConnected = false;
 // CHANGE THESE TO MATCH YOUR WIRING
  
 // Left motor
-#define LEFT_IN1   18
-#define LEFT_IN2   19
-#define LEFT_EN    16
+#define LEFT_IN1   9
+#define LEFT_IN2   10
+#define LEFT_EN    13
  
 // Right motor
-#define RIGHT_IN1  17
-#define RIGHT_IN2  15
-#define RIGHT_EN   21
+#define RIGHT_IN1  11
+#define RIGHT_IN2  12
+#define RIGHT_EN   14
  
 // ===================== PWM =====================
 const int pwmFreq = 5000;
