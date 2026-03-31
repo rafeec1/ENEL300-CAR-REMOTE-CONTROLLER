@@ -1,20 +1,23 @@
 #include <Arduino.h>
 
 #include "ultrasonicMaybe.h"
-#include "controller.h"
+// #include "controller.h"
+#include "metalDetector.h"
+#include "receiver.h"
 
 void setup() {
     Serial.begin(115200);
     Serial.printf("Serial Begin...");
     
-    // futureBegin();
+    //controllerBegin();
+    rxBegin();
     distanceBegin();
-    controllerBegin();
+    metalBegin();
 }
 
 void loop() {
-
-    // futureUpdate();
+    //controllerUpdate()
+    rxUpdate();
     distanceUpdate();
-    controllerUpdate();
+    metalUpdate();
 }

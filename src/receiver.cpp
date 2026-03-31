@@ -12,8 +12,9 @@
 #define RIGHT_IN2  12
 #define RIGHT_EN   14
 
-#define LED_PIN    2
 #define LED_TRIG   18 
+
+#define SAMPLE_TIME 200
 
 // ===================== PWM =====================
 const int pwmFreq = 5000;
@@ -21,6 +22,8 @@ const int pwmResolution = 8;
  
 const int leftChannel  = 0;
 const int rightChannel = 1;
+
+unsigned long pastTime = 0;
  
 // 60% speed
 const int motorSpeedLeft = 190;   // 255 * 0.60 ≈ 153
@@ -37,14 +40,10 @@ struct_message rxData;
 // CONNECTION STATE VARIABLES
 unsigned long lastRecvTime = 0;
 bool signalLost = true;
-
 bool ledState = LOW;
 
-// transmitter MAC
-uint8_t transmitterMAC[] = {0xF0, 0x9E, 0x9E, 0x03, 0x0C, 0x88};
 
-void onDataRecv(const uint8_t *mac,
-                const uint8_t *incomingData, int len) {
+void onDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
   memcpy(&rxData, incomingData, sizeof(rxData));
   lastRecvTime = millis();
   signalLost = false;
@@ -115,12 +114,10 @@ void turnRight() {
   Serial.println(">>> RIGHT TURN");
 }
 
-void setup() {
+void rxBegin() {
   Serial.begin(115200);
   delay(1000);  // same trick so monitor can catch setup prints
-  Serial.println("BOOTED");
 
-  pinMode(LED_PIN, OUTPUT);
   pinMode(LED_TRIG, OUTPUT);
 
   // Motor pins
@@ -139,68 +136,42 @@ void setup() {
   stopMotors();
 
   WiFi.mode(WIFI_STA);
-  Serial.println("WIFI STA OK");
-
-  esp_err_t result = esp_now_init();
-  Serial.print("ESP-NOW init result: ");
-  Serial.println(result);
-
-  if (result != ESP_OK) {
+  if (esp_now_init() != ESP_OK) {
     Serial.println("ESP-NOW init failed");
     return;
   }
 
   esp_now_register_recv_cb(onDataRecv);
-
-  /*esp_now_peer_info_t peerInfo = {};
-  memcpy(peerInfo.peer_addr, receiverMAC, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-
-  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-    Serial.println("Failed to add peer");
-    return;
-  }
-  */
   Serial.println("RECEIVER READY");
 }
 
-void loop() {
-
-    // ===== FAILSAFE =====
-  if (millis() - lastRecvTime > 1000) {
-    signalLost = true;
-    stopMotors();
-    digitalWrite(LED_PIN, LOW);
-    return;
+void rxUpdate() {
+  unsigned long timeCurrent = millis();
+  if(timeCurrent - pastTime >= SAMPLE_TIME){
+    pastTime = timeCurrent;
+    if (rxData.fwd) {
+      forward();
+    }
+    else if (rxData.bck) {
+      reverse();
+    }
+    else if (rxData.left) {
+      turnLeft();
+    }
+    else if (rxData.right) {
+      turnRight();
+    }
+    else if (rxData.t1) {
+      digitalWrite(LED_TRIG, HIGH);
+    }
+    else {
+      stopMotors();
+    }
+      Serial.print("t1:");
+      Serial.println(rxData.t1);
+      Serial.print("t2:");
+      Serial.println(rxData.t2);
   }
-  digitalWrite(LED_PIN, HIGH);
-
-  // ===== BUTTON PRIORITY =====
-  if (rxData.fwd) {
-    forward();
-  }
-  else if (rxData.bck) {
-    reverse();
-  }
-  else if (rxData.left) {
-    turnLeft();
-  }
-  else if (rxData.right) {
-    turnRight();
-  }
-  else if (rxData.t1) {
-    digitalWrite(LED_TRIG, HIGH);
-  }
-  else {
-    stopMotors();
-  }
-    Serial.print("t1:");
-    Serial.print(rxData.t1);
-    Serial.print("t2:");
-    Serial.print(rxData.t2);
-
-  delay(2000);
 }
  
  

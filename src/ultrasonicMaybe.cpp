@@ -11,9 +11,10 @@
 
 #include <Arduino.h>
 
-const int trigPin = 13;
-const int echoPin = 14;
-const int ledPin = 12;
+const int trigPin = 2;
+const int echoPin = 1;
+//const int ledPin = 12;
+
 
 //define sound speed in cm/uS
 #define SOUND_SPEED 0.034
@@ -27,7 +28,7 @@ void distanceBegin() {
   Serial.println("UltrasonicSensor begin...");
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-  pinMode(ledPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   
   digitalWrite(trigPin, LOW);
 }
@@ -37,7 +38,7 @@ void distanceUpdate() {
   unsigned long timePassed = millis();
   if (timePassed - currentTime >= SAMPLE_PERIOD) { // check if the interval has passed
     currentTime = timePassed; 
-    digitalWrite(ledPin, !digitalRead(ledPin));
+    // digitalWrite(ledPin, !digitalRead(ledPin));
     digitalWrite(trigPin, HIGH);
     delayMicroseconds(10);          // Sets the trigPin on HIGH state for 10 micro seconds
     digitalWrite(trigPin, LOW);
