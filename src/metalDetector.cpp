@@ -6,15 +6,25 @@
  */
 
 #include <Arduino.h>
-const int pulsePin = 18;
-const int sensePin = 8;
+
+#define PRINT_PERIOD 1000
+
+const int pulsePin = 18;  // NEW: PWM: 35 
+const int sensePin = 8;   // NEW: ADC1 7
 const int buzzerPin = 5;
 
 // Tuning parameters
-const int nPulses = 250;      // Number of pulses to "charge" the LC filter
 const int threshold = 100;     // Sensitivity: adjust based on Serial Plotter
 float runningAverage = 0;     // Long-term baseline (auto-calibration)
-const float alpha = 0.02;     // How fast the baseline follows environmental drift
+const float alpha = 0.001;     // How fast the baseline follows environmental drift
+unsigned long counter = 0;
+
+const int nPulses = 256;      // Number of pulses to "charge" the LC filter
+int sumsum=0; //running sum of 64 sums 
+int skip=0;   //number of skipped sums
+int diff=0;        //difference between sum and avgsum
+int flash_period=0;//period (in ms) 
+unsigned int prev_flash=0; //time stamp of previous flash
 
 
 // core logic: pulse the coil and read the integrated voltage
@@ -24,18 +34,17 @@ int measureInductance() {
   
   // Wait a very short moment for the capacitor to charge
   // On ESP32-S3, this happens very fast
-  delayMicroseconds(200); 
+  delayMicroseconds(3); 
+  ledcWrite(0,0);
+  delayMicroseconds(3);
 
   int val = analogRead(sensePin);
 
-  // Stop pulses to "reset" for the next cycle
-  ledcWrite(0, 0); 
   
   return val;
 }
 
 void metalBegin() {
-  Serial.begin(115200);
   pinMode(buzzerPin, OUTPUT);
   digitalWrite(buzzerPin, LOW);
 
@@ -56,8 +65,8 @@ void metalBegin() {
   Serial.println(runningAverage);
 }
 
-
 void metalUpdate() {
+  unsigned long timeStart = millis();
   int val = measureInductance();
 
   // Update running average (auto-tunes the baseline)
@@ -68,12 +77,19 @@ void metalUpdate() {
   // Detection logic
   if (difference > threshold) {
     digitalWrite(buzzerPin, HIGH); // Turn on active buzzer
-    Serial.print("!!! METAL !!! Diff: ");
   } else {
     digitalWrite(buzzerPin, LOW);  // Turn off active buzzer
-    Serial.print("Scan: ");
   }
+  
+  if (timeStart - counter >= PRINT_PERIOD) {
+    counter = timeStart;
+    if (difference >= threshold) {
+      Serial.print("!!! METAL !!! Diff: ");
+    } else {
+      Serial.print("Scan: ");
+    }
+    Serial.println(difference);
+  } 
 
-  Serial.println(difference);
   delay(20); 
 }

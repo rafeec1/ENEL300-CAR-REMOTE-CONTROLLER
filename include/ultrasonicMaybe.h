@@ -4,4 +4,7 @@
 void distanceBegin();
 void distanceUpdate();
 
+#pragma once
+extern volatile float distanceCm;
+
 #endif

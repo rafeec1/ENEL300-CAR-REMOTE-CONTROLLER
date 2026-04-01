@@ -10,10 +10,12 @@
 *********/
 
 #include <Arduino.h>
+#include "ultrasonicMaybe.h"
 
 const int trigPin = 2;
 const int echoPin = 1;
 //const int ledPin = 12;
+
 
 
 //define sound speed in cm/uS
@@ -21,8 +23,9 @@ const int echoPin = 1;
 #define SAMPLE_PERIOD 1000
 
 long duration;
-float distanceCm;
+volatile float distanceCm;
 unsigned long currentTime = 0;
+
 
 void distanceBegin() {
   Serial.println("UltrasonicSensor begin...");
