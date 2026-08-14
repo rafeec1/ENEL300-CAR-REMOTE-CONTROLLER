@@ -28,7 +28,7 @@ const int rightChannel = 1;
 const int motorSpeedLeft = 230;   
 const int motorSpeedRight = 170;  
 
-uint8_t TxMACaddress[] = {0xF0, 0x9E, 0x9E, 0x03, 0x0C, 0x88};
+uint8_t TxMACaddress[] = {0x58, 0xe6, 0xc5, 0x74, 0x74, 0xc0};
 bool connected = false;
 // ===================== DATA STRUCT
 // MUST MATCH SENDER EXACTLY
